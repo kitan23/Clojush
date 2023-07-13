@@ -37,7 +37,7 @@
                           'integer_add
                           'integer_sub)
    :epigenetic-markers []
-   :parent-selection :tournament
+   :parent-selection :plexicase
    :genetic-operator-probabilities {:alternation 0.5
                                     :uniform-mutation 0.5}
    })

@@ -3,11 +3,12 @@
         [clojush.pushgp.selection preselection tournament lexicase epsilon-lexicase
          elitegroup-lexicase random-threshold-lexicase random-toggle-lexicase 
          randomly-truncated-lexicase novelty rarified-lexicase subset-tournament
-         fitness-proportionate]))
+         fitness-proportionate plexicase]
+        ))
 
 (defn select
   "Returns a selected parent."
-  [pop {:keys [parent-selection print-selection-counts case-batch-size epsilon-lexicase-version] :as argmap}]
+  [pop {:keys [parent-selection print-selection-counts case-batch-size epsilon-lexicase-version plexicase-parents index] :as argmap}] 
   (let [pop-with-meta-errors (map #(update-in % [:errors] (comp vec concat) (:meta-errors %)) pop)
         pop-with-meta-and-batch-errors (if (= case-batch-size 1)
                                          pop-with-meta-errors
@@ -16,6 +17,7 @@
         selected (case parent-selection
                    :tournament (tournament-selection preselected argmap)
                    :lexicase (lexicase-selection preselected argmap)
+                   :plexicase (plexicase-select-parent-using-index plexicase-parents index)
                    :downsampled-lexicase (lexicase-selection preselected argmap) ;; just uses lexicase; downsampling happens earlier
                    :epsilon-lexicase (case epsilon-lexicase-version
                                        ;; Semi-dynamic or dynamic

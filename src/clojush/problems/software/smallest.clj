@@ -151,12 +151,12 @@
    :evalpush-limit 200
    :population-size 1000
    :max-generations 200
-   :parent-selection :lexicase
+   :parent-selection :plexicase
    :epigenetic-markers [:close]
-   :genetic-operator-probabilities {:alternation 0.2
-                                    :uniform-mutation 0.2
-                                    :uniform-close-mutation 0.1
-                                    [:alternation :uniform-mutation] 0.5
+   :genetic-operator-probabilities {:alternation 0
+                                    :uniform-mutation 1
+                                    :uniform-close-mutation 0
+                                    [:alternation :uniform-mutation] 0
                                     }
    :alternation-rate 0.01
    :alignment-deviation 5

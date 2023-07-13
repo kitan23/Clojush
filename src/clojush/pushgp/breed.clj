@@ -148,7 +148,7 @@
            track-instruction-maps] :as argmap}]
   (let [first-parent (if (= 0 (:parents (get genetic-operators operator)))
                        nil
-                       (select population argmap))
+                       (select population (assoc argmap :index location))) 
         operator-vector (if (sequential? operator) operator (vector operator))
         child (perform-genetic-operator-list operator-vector first-parent
                                              population location rand-gen argmap)]

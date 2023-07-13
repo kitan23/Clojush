@@ -2,7 +2,9 @@
   (:require [clojure.java.io :as io]
             [clj-random.core :as random]
             [clojure.repl :as repl]
-            [clojush.pushgp.record :as r])
+            [clojush.pushgp.record :as r]
+            [clojush.pushgp.selection.plexicase :as plx]
+            )
   (:use [clojush args globals util pushstate random individual evaluate meta-errors
          simplification translate]
         [clojush.instructions boolean code common numbers random-instructions string char vectors
@@ -188,6 +190,9 @@
   ; compute errors
   (compute-errors pop-agents rand-gens novelty-archive @push-argmap)
   (println "Done computing errors.")
+  
+
+  ;; (println "ARGS MAP" @push-argmap)
   (when (and (:preserve-frontier argmap)
              (or (not (:autoconstructive argmap))
                  (> generation 0)))
@@ -235,6 +240,16 @@
                        candidates
                        (remove-one to-preserve candidates)))))))))
   (timer @push-argmap :fitness)
+  (when (= (:parent-selection @push-argmap) :plexicase)
+    (println "PLEXICASE")
+    (let [
+          ;; _ (println "PLEXICASE")
+          pop (mapv deref pop-agents)
+          num-parents (count pop)
+          _ (println "NUM PARENTS" num-parents)
+          opts (assoc {} :individuals pop :num-errors (count (:errors (first pop))))
+          plex-parents (plx/make-plexicase-selection num-parents opts)]
+      (swap! push-argmap assoc :plexicase-parents plex-parents)))
   ;; calculate solution rates if necessary for historically-assessed hardness
   (calculate-hah-solution-rates pop-agents @push-argmap)
   ;; create global structure to support elite group lexicase selection
